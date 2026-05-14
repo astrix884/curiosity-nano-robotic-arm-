@@ -1,0 +1,28 @@
+# Real-Time Robotic Arm Using Curiosity Nano
+
+This project demonstrates a robotic arm controlled using potentiometers and the Microchip Curiosity Nano board.
+
+## Features
+- ADC-based analog input
+- Software-timed servo control
+- Custom PCB breakout board
+- External 5V servo power supply
+
+## Hardware Used
+- Curiosity Nano (PIC16F17576)
+- MG996R and SG90 Servos
+- 10k Potentiometers
+- DC Buck Converter
+- Custom PCB
+
+## Software
+- MPLAB X IDE
+- MCC Melody
+
+## Sponsored By
+DigiKey Electronics
+
+## Files
+- `code/main.c` – Main firmware
+- `circuit_diagram/` – Wiring diagram
+- `images/` – Project photos
