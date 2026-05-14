@@ -1,0 +1,48 @@
+//Code To Control 4 servos with ADC :
+
+#include <xc.h>
+#include "mcc_generated_files/system/system.h"
+#define _XTAL_FREQ 32000000
+#define SERVO_MIN 600
+#define SERVO_MAX 2300
+void delay_us_var(uint16_t us)
+{  while(us--) __delay_us(1);
+}
+uint16_t readADC(uint8_t channel)
+{
+    ADC_SelectChannel(channel);
+    __delay_us(5);
+    ADC_StartConversion();
+    while(!ADC_IsConversionDone());
+    return ADC_GetConversionResult();
+}
+void main(void)
+{ SYSTEM_Initialize();
+    uint16_t a0, a1, a2, a3;
+    uint16_t p0, p1, p2, p3;
+    uint32_t total;
+    while (1)
+    {
+        // Read potentiometers
+        a0 = readADC(channel_AN0);
+        a1 = readADC(channel_AN1);
+        a2 = readADC(channel_AN2);
+        a3 = readADC(channel_AN3);
+
+        // Map ADC values to servo pulse width
+        p0 = SERVO_MIN + ((uint32_t)a0 * (SERVO_MAX - SERVO_MIN)) / 1023;
+        p1 = SERVO_MIN + ((uint32_t)a1 * (SERVO_MAX - SERVO_MIN)) / 1023;
+        p2 = SERVO_MIN + ((uint32_t)a2 * (SERVO_MAX - SERVO_MIN)) / 1023;
+        p3 = SERVO_MIN + ((uint32_t)a3 * (SERVO_MAX - SERVO_MIN)) / 1023;
+
+        // Generate servo signals
+        RC2 = 1; delay_us_var(p0); RC2 = 0;
+        RC3 = 1; delay_us_var(p1); RC3 = 0;
+        RC4 = 1; delay_us_var(p2); RC4 = 0;
+        RC5 = 1; delay_us_var(p3); RC5 = 0;
+        // Maintain 20 ms control frame
+        total = (uint32_t)p0 + p1 + p2 + p3;
+        if(total < 20000)
+            delay_us_var(20000 - total);
+    }
+}
